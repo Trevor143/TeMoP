@@ -35,6 +35,12 @@ class Tender extends Model
     | FUNCTIONS
     |--------------------------------------------------------------------------
     */
+    public function noDetail(){
+//        $with = Tender::with('detail')->has('detail')->get();
+//
+//        Tender::all()->except($with);
+
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -44,6 +50,14 @@ class Tender extends Model
     //Applies to Partner Users
     public function user(){
         return $this->belongsToMany('App\Models\BackpackUser','tender_user');
+    }
+
+    public function detail(){
+        return $this->hasOne('App\Models\Detail');
+    }
+
+    public function timeline(){
+        return $this->hasMany('App\Models\Timeline', 'tender_id');
     }
 
 

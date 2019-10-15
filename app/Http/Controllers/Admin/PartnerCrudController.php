@@ -68,8 +68,8 @@ class PartnerCrudController extends CrudController
         $this->crud->setRequiredFields(UpdateRequest::class, 'edit');
     }
 
-//    public function create()
-//    {
+    public function create()
+    {
 //        Tender::all();
 //
 ////        $users = BackpackUser::all();
@@ -77,7 +77,8 @@ class PartnerCrudController extends CrudController
 //        $tenders = Tender::all();
 //        return view('vendor.backpack.partner.create', compact('partners','tenders'));
 ////        return $tenders;
-//    }
+
+    }
 
     public function store(StoreRequest $request)
     {

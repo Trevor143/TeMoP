@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Detail;
+use App\Models\Tender;
 use App\User;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
@@ -36,8 +38,8 @@ class TenderCrudController extends CrudController
         | CrudPanel Configuration
         |--------------------------------------------------------------------------
         */
-                $this->crud->addButtonFromView('line','create_partner','create_partner','beginning');
 
+        $this->crud->addButtonFromView('line','add_detail','add_detail','beginning');
         // TODO: remove setFromDb() and manually define Fields and Columns
 //        $this->crud->setFromDb();
         $this->crud->setColumns(['name', 'brief', 'deadline', 'applicationFee',

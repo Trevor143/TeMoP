@@ -11,6 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('vendor.backpack.add_partner');
-});
+//Route::get('/', function () {
+//    return view('vendor.backpack.add_partner');
+//});
+Route::get('/', 'HomeController@index');
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

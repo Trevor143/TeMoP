@@ -6,9 +6,12 @@
 // This route file is loaded automatically by Backpack\Base.
 // Routes you generate using Backpack\Generators will be placed here.
 
+use App\Http\Controllers\Admin\BidController;
+use App\Models\Bid;
 use App\Models\Detail;
 use App\Models\Tender;
 use App\Models\Timeline;
+use Illuminate\Support\Facades\Auth;
 
 
 Route::group([
@@ -20,17 +23,17 @@ Route::group([
     CRUD::resource('tender', 'TenderCrudController');
     CRUD::resource('detail','DetailCrudController');
 
+    Route::get('bids/bidsfor-{tender_id}', 'BidController@bids')->name('bids.bids');
+    Route::resource('bids', 'BidController');
 //    CRUD::resource('user', 'UserCrudController');
 
+    Route::get('/bids/{bid_id}/award', 'TenderCrudController@award')->name('award');
+
     Route::get('test/{id}', function ($id){
-//        $tender = Tender::with('timeline')->get();
-        $count = Timeline::where('tender_id',$id)->count();
-        $all = Timeline::all();
-//        $tender= Tender::findOrFail($id)->with('timeline')->with('detail')->get()->toArray();
-        $tender = Timeline::where('tender_id',$id)->get()->toJson();
-//        dd($tender);
-//        return $tender;
-        return view('vendor.backpack.timelines.table', compact('tender'));
+        $tender = Tender::find($id)->bids;
+//        $bid = Bid::where('tender_id', $id)->get();
+//        $bid = $tender->bids ;
+        dd($tender);
     });
 
     Route::get('try',function (){

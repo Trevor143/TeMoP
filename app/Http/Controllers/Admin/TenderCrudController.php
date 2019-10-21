@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Bid;
 use App\Models\Detail;
 use App\Models\Tender;
 use App\User;
@@ -12,6 +13,7 @@ use App\Http\Requests\TenderRequest as StoreRequest;
 use App\Http\Requests\TenderRequest as UpdateRequest;
 use Backpack\CRUD\CrudPanel;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -155,9 +157,15 @@ class TenderCrudController extends CrudController
         return $redirect_location;
     }
 
-    public function partner(){
-//        return $this->crud->setListView('vendor.backpack.partner.partnerList');
-//        return view('vendor.backpack.add_partner');
-        return view($this->crud->setListView('vendor.backpack.partner.partnerList'));
+    public function award($id)
+    {
+        $bid = Bid::find($id);
+
+        $bid->tender->company()->attach($bid->bidder->company->id);
+
+        $bid->tender->closed = true;
+        $bid->tender->save();
+
+        return redirect()->route('bids.bids');
     }
 }

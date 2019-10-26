@@ -50,9 +50,10 @@ class BidController extends Controller
      */
     public function bids($id)
     {
-        $bids = Tender::find($id)->bids;
+        $tender = Tender::find($id);
+        $bids = $tender->bids;
 
-        return view('vendor.backpack.bids.bids', compact('bids'));
+        return view('vendor.backpack.bids.bids', compact('bids','tender'));
     }
 
     /**

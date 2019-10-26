@@ -3,12 +3,13 @@
 @section('header')
     <section class="content-header">
         <h1>
-            Bids <small>Bids on your tenders will show up here once the deadline is past</small>
+            Bids for {{$tender->name}}
         </h1>
 
         <ol class="breadcrumb">
             <li><a href="{{ backpack_url() }}">{{ config('backpack.base.project_name') }}</a></li>
             <li class="active">Bids</li>
+            <li>for {{$tender->name}}</li>
         </ol>
     </section>
 @stop

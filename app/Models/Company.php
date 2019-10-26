@@ -13,7 +13,7 @@ class Company extends Model
 
     public function tender()
     {
-        return $this->hasMany('App\Models\Tender');
+        return $this->belongsToMany('App\Models\Tender', 'company_tender');
     }
 
 }

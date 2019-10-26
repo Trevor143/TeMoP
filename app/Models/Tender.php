@@ -64,10 +64,14 @@ class Tender extends Model
         return $this->hasMany('App\Models\Bid');
     }
 
-    public function company(){
+    public function company()
+    {
         return $this->belongsToMany('App\Models\Company', 'company_tender');
     }
 
+    public function tasks(){
+        return $this->hasMany('App\Task');
+    }
 
     /*
     |--------------------------------------------------------------------------

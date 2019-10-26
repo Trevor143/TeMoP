@@ -3,7 +3,7 @@
 @section('header')
     <section class="content-header">
         <h1>
-            Bids <small>Bids on your tenders will show up here once the deadline is past</small>
+            Bids for {{$bid->tender->name}}
         </h1>
 
         <ol class="breadcrumb">

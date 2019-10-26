@@ -29,6 +29,8 @@ Route::group([
 
     Route::get('/bids/{bid_id}/award', 'TenderCrudController@award')->name('award');
 
+    Route::get('tender/{tender_id}/timeline', 'TaskController@show')->name('timeline');
+
     Route::get('test/{id}', function ($id){
         $tender = Tender::find($id)->bids;
 //        $bid = Bid::where('tender_id', $id)->get();

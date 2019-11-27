@@ -17,5 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/data/{tender_id}', 'GanttController@get');
+Route::get('/data/{tender_id}', 'Admin\GanttController@get');
 Route::resource('task', 'Admin\TaskController');
+Route::resource('link', 'Admin\LinkController');
+

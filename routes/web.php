@@ -20,3 +20,8 @@ Route::get('/', 'HomeController@index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('set-password', function (){
+    return view('auth.passwords.setPassword');
+})->name('setpass');
+
+Route::post('password', 'TestController@password')->name('password');

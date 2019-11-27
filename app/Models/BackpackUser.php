@@ -8,11 +8,12 @@ use Backpack\Base\app\Notifications\ResetPasswordNotification as ResetPasswordNo
 use Backpack\CRUD\CrudTrait; // <------------------------------- this one
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Laravelista\Comments\Commenter;
 use Spatie\Permission\Traits\HasRoles;// <---------------------- and this one
 
 class BackpackUser extends User
 {
-    use CrudTrait; // <----- this
+    use CrudTrait, Commenter; // <----- this
     use InheritsRelationsFromParentModel;
 
     protected $table = 'users';

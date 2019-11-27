@@ -32,8 +32,8 @@
         <!-- Main content -->
         <section class="content">
 
+            @yield('gantt_scripts')
           @yield('content')
-
         </section>
         <!-- /.content -->
       </div>

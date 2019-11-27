@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tender;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class TestController extends Controller
 {
@@ -73,6 +77,34 @@ class TestController extends Controller
     {
         //
     }
+
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+    }
+
+    public function password(Request $request)
+    {
+//        $messages = [
+//            'password' => ''
+//        ]
+
+        $request->validate([
+            'password' => 'required|min:8|confirmed'
+        ]);
+
+        $password = Hash::make($request->password);
+//        dd($password);
+
+        backpack_user()->password = $password;
+        backpack_user()->email_verified_at = Carbon::now();
+        backpack_user()->save();
+
+        return redirect('admin');
+    }
+
 
     /**
      * Update the specified resource in storage.

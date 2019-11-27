@@ -29,9 +29,32 @@ Route::group([
 
     Route::get('/bids/{bid_id}/award', 'TenderCrudController@award')->name('award');
 
-    Route::get('tender/{tender_id}/timeline', 'TaskController@show')->name('timeline');
+//    Route::get('tender/{tender_id}/timeline', 'GanttController@gantt')->name('timeline');
 
-    Route::get('test/{id}', function ($id){
+    Route::get('tender/{tender_id}/timeline', 'GanttController@show'
+//        function ($id){
+//        $tender = Tender::find($id);
+//
+////        $people = \App\Models\BackpackUser::all('id','name')->map(function ($items){
+////            $data['id'] = $items->id;
+////            $data['text'] = $items->name;
+////            return $data;
+////        });
+//
+//        $people = $tender->user->map(function ($items){
+//            $data['id'] = $items->id;
+//            $data['text'] = $items->name;
+//            return $data;
+//        });
+////        dd($tender->tasks);
+//
+//        return view('vendor.backpack.timelines.gantt', compact('people', 'tender'));
+//    }
+    );
+
+    Route::get('tender/timeline/task/{task}', 'TaskController@show')->name('task_detail');
+
+        Route::get('test/{id}', function ($id){
         $tender = Tender::find($id)->bids;
 //        $bid = Bid::where('tender_id', $id)->get();
 //        $bid = $tender->bids ;
@@ -57,3 +80,5 @@ Route::group([
 //    Route::get('admin/tender', 'PartnerCrudController@create')->name('part');
     CRUD::resource('timeline', 'TimelineCrudController');
 }); // this should be the absolute last line of this file
+
+

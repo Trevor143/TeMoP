@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Link;
 use Illuminate\Http\Request;
 
@@ -78,7 +79,7 @@ class LinkController extends Controller
      * @param  \App\Link  $link
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Link $link)
+    public function update(Request $request, Link $link, $id)
     {
         $link = Link::find($id);
 
@@ -101,7 +102,7 @@ class LinkController extends Controller
      */
     public function destroy(Link $link)
     {
-        $link = Link::find($id);
+//        $link = Link::find($id);
         $link->delete();
 
         return response()->json([

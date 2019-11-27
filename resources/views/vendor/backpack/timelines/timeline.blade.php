@@ -1,8 +1,8 @@
 @extends('backpack::layout')
 
 @section('after_styles')
-    <script src="{{asset('gantt/dhtmlxgantt.js')}}"></script>
-    <link href="{{asset('gantt/dhtmlxgantt.css')}}" rel="stylesheet">
+    <script src="{{asset('gantt/codebase/dhtmlxgantt.js')}}"></script>
+    <link href="{{asset('gantt/codebase/dhtmlxgantt.css')}}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.css">
@@ -79,7 +79,7 @@
 
 @section('after_scripts')
 
-    <script src="{{asset('gantt/ext/dhtmlxgantt_multiselect.js')}}"></script>
+    <script src="{{asset('gantt/codebase/ext/dhtmlxgantt_multiselect.js')}}"></script>
 
 <script>
         gantt.config.date_format = "%Y-%m-%d %H:%i:%s";
@@ -146,13 +146,13 @@
             }
         };
 
-        gantt.serverList("people", [
-            {key: 6, label: "John"},
-            {key: 7, label: "Mike"},
-            {key: 8, label: "Anna"},
-            {key: 9, label: "Bill"},
-            {key: 10, label: "Floe"}
-        ]);
+        // gantt.serverList("people", [
+        //     {key: 6, label: "John"},
+        //     {key: 7, label: "Mike"},
+        //     {key: 8, label: "Anna"},
+        //     {key: 9, label: "Bill"},
+        //     {key: 10, label: "Floe"}
+        // ]);
 
         function findUser(id){
             var list = gantt.serverList("people");
@@ -202,14 +202,17 @@
         gantt.locale.labels.section_owner = "Owner";
         gantt.config.lightbox.sections = [
             {name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
-            {name:"owner",height:60, type:"multiselect", options:gantt.serverList("people"), map_to:"owners"},
-            {name: "time", type: "duration", map_to: "auto"}
-        ];
+            // {name:"owner",height:60, type:"multiselect", options:gantt.serverList("people"), map_to:"owners"},
+            {name: "owner", height: 22, map_to: "owner_id", type: "select", options: gantt.serverList("people")},
+            // {name:"owner",height:60, type:"multiselect", options:gantt.serverList("people"), map_to:"owner_id" },
+            {name: "time", type: "duration", map_to: "auto"},
+            {{--{name: "tender_id", type:"hidden", value:"{{$tender->id}}"}--}}
 
+        ];
 
         gantt.init("gantt_here");
 
-        gantt.load("/api/data/{{$tender->id}}");
+        gantt.load("/api/data");
 
         var dp = new gantt.dataProcessor("/api");
         dp.init(gantt);

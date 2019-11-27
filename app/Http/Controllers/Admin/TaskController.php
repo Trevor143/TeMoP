@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BackpackUser;
 use App\Models\Tender;
 use App\Task;
 use Illuminate\Http\Request;
@@ -37,7 +38,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+//        dd($request);
         $task = new Task();
 
         $task->text = $request->text;
@@ -46,10 +47,10 @@ class TaskController extends Controller
         $task->progress = $request->has("progress") ? $request->progress : 0;
         $task->parent = $request->parent;
         $task->tender_id = $request->tender_id;
-//        $task->user_id = $request->user_id;
+        $task->type = $request->type;
+        $task->owners = $request->owner_id;
 
         $task->save();
-
         return response()->json([
             "action"=> "inserted",
             "tid" => $task->id
@@ -62,13 +63,25 @@ class TaskController extends Controller
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
+//    public function show($id)
+//    {
+//        $tender = Tender::find($id);
+//        $people = BackpackUser::all('id','name')->map(function ($items){
+//            $data['id'] = $items->id;
+//            $data['text'] = $items->name;
+//            return $data;
+//        });
+////        $tasks = $tender->tasks;
+////        dd($tender);
+//        return view('vendor.backpack.timelines.gantt', compact('tender', 'people'));
+//    }
+
     public function show($id)
     {
-        $tender = Tender::find($id);
+        $task = Task::find($id);
+//        dd($task->user->name);
 
-//        $tasks = $tender->tasks;
-//        dd($tender);
-        return view('vendor.backpack.timelines.timeline', compact('tender'));
+        return view('vendor.backpack.timelines.task', compact('task'));
     }
 
     /**
@@ -79,7 +92,6 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
     }
 
     /**
@@ -91,15 +103,16 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
-
         $task = Task::find($id);
 
         $task->text = $request->text;
         $task->start_date = $request->start_date;
         $task->duration = $request->duration;
         $task->progress = $request->has("progress") ? $request->progress : 0;
+        $task->tender_id = $request->tender_id;
         $task->parent = $request->parent;
+        $task->type = $request->type;
+        $task->owners = $request->owner_id;
 
         $task->save();
 

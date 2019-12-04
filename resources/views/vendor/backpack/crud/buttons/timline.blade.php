@@ -5,18 +5,17 @@
     use App\Models\Detail;
     use App\Models\Tender;
 
-    $tender = App\Models\Tender::find();
+    $tender = App\Models\Tender::where('id',$entry->getKey())->first();
 
 @endphp
 
 @if($tender)
-    @if ($crud->hasAccess('create'))
-        <a href="{{ url(config('backpack.base.route_prefix').'/detail/'.$tender->id.'/edit') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> Timelines </span></a>
-
-    @endif
+        @if ($crud->hasAccess('create'))
+            <a href="{{ url(config('backpack.base.route_prefix').'/tender/'.$tender->id.'/timeline') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> Show Timeline </span></a>
+        @endif
 @else
     @if ($crud->hasAccess('update'))
-        <a href="{{ url(config('backpack.base.route_prefix').'/timeline/create') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> Add Details </span></a>
+        <a href="{{ url(config('backpack.base.route_prefix').'/tender/'.$tender->id.'/timeline') }}" class="btn btn-primary ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-plus"></i> Show Timeline </span></a>
     @endif
 @endif
 

@@ -11,7 +11,7 @@
             <li><a href='{{ backpack_url('tender') }}'><i class='fa fa-tag'></i> <span>Tenders</span></a></li>
         @endcan
             @can('tenders')
-                <li><a href='{{ backpack_url('timeline') }}'><i class='fa fa-tag'></i> <span>Timeline</span></a></li>
+                <li><a href='{{ backpack_url('bids') }}'><i class='fa fa-tag'></i> <span>Bids</span></a></li>
             @endcan
     </ul>
 </li>

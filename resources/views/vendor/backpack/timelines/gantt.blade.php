@@ -94,13 +94,27 @@
             width: 400px;
         }
 
+        .weekend {
+            background: #f4f7f4;
+        }
+
+        .gantt_selected .weekend {
+            background: #f7eb91;
+        }
+
     </style>
 @stop
 
 @section('header')
     <section class="content-header">
         <h1>
-            Timelines <small>Bids on your tenders will show up here once the deadline is past</small>
+            Timelines for <strong>{{$tender->name}}</strong>
+            @if($tender->company)
+            @foreach($tender->company as $com)
+                awarded to
+                <strong>{{$com->name}}</strong>
+                @endforeach
+                @endif
         </h1>
         <a href="/tender/timeline/task/{task}"></a>
         <ol class="breadcrumb">
@@ -116,9 +130,35 @@
 {{--    <script src="{{asset('gantt')}}"></script>--}}
     <script src="{{asset('gantt_files/codebase/dhtmlxgantt.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>
+    <script src="http://export.dhtmlx.com/gantt/api.js"></script>
 @stop
 
 @section('content')
+    <div class="box">
+        @if($tender->bids->count() > 0)
+            @if($count == $tasks)
+                <div class="box-header with-border">
+                    <h3>All Tasks completed</h3>
+                    <h5>Do you want to complete this tender?</h5>
+                    <button class="btn btn-success">Complete Tender</button>
+                </div>
+            @endif
+        @endif
+        <div class="box-header">
+            @if($tender->closed === 0)
+            <h3 class="header">
+                Close tender <small><strong>Edits will not be allowed on the timeline once tender is closed</strong></small>
+            </h3>
+                <a href="{{route('close', $tender->id)}}"><button class="btn btn-danger">Close Tender</button></a>
+            @else
+                <h3 class="header">
+                    Open tender <small><strong>You can re-adjust task dates once a tender is open</strong></small>
+                </h3>
+                <a href="{{route('open', $tender->id)}}"><button class="btn btn-success">Open Tender</button></a>
+            @endif
+        </div>
+    </div>
+
     <form class="gantt_control">
         <input type="button" value="Zoom In" onclick="zoomIn()">
         <input type="button" value="Zoom Out" onclick="zoomOut()">
@@ -137,8 +177,8 @@
 
         <input type="radio" id="scale5" class="gantt_radio" name="scale" value="year" checked>
         <label for="scale5">Year scale</label>
-
     </form>
+
     <div id="gantt_here"  style='width:100%; height:600px;'></div>
     <script>
             {{-- Zoom Configurations --}}
@@ -207,7 +247,7 @@
             document.querySelector(".gantt_radio[value='" +config.name+ "']").checked = true;
         });
 
-        gantt.config.work_time = true;
+        gantt.config.work_time = false;
 
         gantt.config.scale_unit = "day";
         gantt.config.date_scale = "%D, %d";
@@ -228,11 +268,16 @@
 
         ];
 
-        gantt.templates.timeline_cell_class = function (task, date) {
-            if (!gantt.isWorkTime(date))
-                return "week_end";
-            return "";
-        };
+            gantt.templates.scale_cell_class = function (date) {
+                if (date.getDay() === 0 || date.getDay() === 6) {
+                    return "weekend";
+                }
+            };
+            gantt.templates.timeline_cell_class = function (item, date) {
+                if (date.getDay() === 0 || date.getDay() === 6) {
+                    return "weekend"
+                }
+            };
 
         gantt.config.columns = [
             {name: "text", tree: true, width: 200, resize: true},
@@ -350,17 +395,32 @@
             ];
 
 {{--            if({{$tender}})--}}
+            var tender = {!! json_encode($tender) !!};
 
             gantt.attachEvent("onBeforeLightbox", function (id) {
                 var task = gantt.getTask(id);
 
-                task.my_template = "<a href='/admin/tender/timeline/task/"+ task.id+"' class='btn btn-primary'> Task Details </a>\n";
+                    var closed = tender.closed;
 
-                // gantt.config.buttons_left = ["gantt_cancel_btn"];
-                // gantt.config.buttons_right = [];
+                    if (closed === 0 )
+                    {
+                        task.my_template = "<a href='/admin/tender/timeline/task/"+ task.id+"' class='btn btn-primary'> Task Details </a>\n";
 
-                // task.my_template = "<span id='title1'>Holders: </span>" + task.users + "<span id='title2'>Progress: </span>" + task.progress * 100 + " %";
-                return true;
+                        // gantt.config.buttons_left = ["gantt_cancel_btn"];
+                        // gantt.config.buttons_right = [];
+
+                        return true;
+                    }
+                    else
+                        {
+                        task.my_template = "<a href='/admin/tender/timeline/task/"+ task.id+"' class='btn btn-primary'> Task Details </a>\n";
+
+                        gantt.config.buttons_left = ["gantt_cancel_btn"];
+                        gantt.config.buttons_right = [];
+
+                        return true;
+                    }
+
             });
 
         gantt.templates.task_class = function (start, end, task) {
@@ -369,6 +429,7 @@
             }
             return "";
         };
+
         gantt.templates.task_text = function (start, end, task) {
             if (task.type === gantt.config.types.meeting) {
                 return "Meeting: <b>" + task.text + "</b>";
@@ -382,10 +443,25 @@
             return "";
         };
 
+        if(tender.closed === 1) {
+            gantt.config.drag_resize = false;
+            gantt.config.drag_links = false;
+            gantt.config.drag_move = false;
+            gantt.config.order_branch = false;
+
+            }
+        else{
+            gantt.config.drag_resize = true;
+            gantt.config.drag_links = true;
+            gantt.config.drag_move = true;
+            gantt.config.order_branch = true;
+
+        }
+
         gantt.config.date_format = "%Y-%m-%d %H:%i:%s";
+        gantt.config.drag_progress = false;
         gantt.config.resource_store = "resource";
         gantt.config.resource_property = "owner_id";
-        gantt.config.order_branch = true;
         gantt.config.open_tree_initially = true;
         gantt.config.layout = {
             css: "gantt_container",

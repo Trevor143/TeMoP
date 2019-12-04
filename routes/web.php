@@ -25,3 +25,5 @@ Route::get('set-password', function (){
 })->name('setpass');
 
 Route::post('password', 'TestController@password')->name('password');
+
+    Route::get('user/tender/{tender_id}/timeline', 'GanttController@show')->name('usertimeline');

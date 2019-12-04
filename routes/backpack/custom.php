@@ -8,6 +8,7 @@
 
 use App\Http\Controllers\Admin\BidController;
 use App\Models\Bid;
+use App\Models\Company;
 use App\Models\Detail;
 use App\Models\Tender;
 use App\Models\Timeline;
@@ -28,36 +29,22 @@ Route::group([
 //    CRUD::resource('user', 'UserCrudController');
 
     Route::get('/bids/{bid_id}/award', 'TenderCrudController@award')->name('award');
+    Route::get('bids/tender/{tender_id}/inviteAll', 'BidController@inviteAll')->name('inviteAll');
 
 //    Route::get('tender/{tender_id}/timeline', 'GanttController@gantt')->name('timeline');
 
-    Route::get('tender/{tender_id}/timeline', 'GanttController@show'
-//        function ($id){
-//        $tender = Tender::find($id);
-//
-////        $people = \App\Models\BackpackUser::all('id','name')->map(function ($items){
-////            $data['id'] = $items->id;
-////            $data['text'] = $items->name;
-////            return $data;
-////        });
-//
-//        $people = $tender->user->map(function ($items){
-//            $data['id'] = $items->id;
-//            $data['text'] = $items->name;
-//            return $data;
-//        });
-////        dd($tender->tasks);
-//
-//        return view('vendor.backpack.timelines.gantt', compact('people', 'tender'));
-//    }
-    );
-
+    Route::get('tender/{tender_id}/timeline', 'GanttController@show')->name('timeline');
     Route::get('tender/timeline/task/{task}', 'TaskController@show')->name('task_detail');
 
-        Route::get('test/{id}', function ($id){
-        $tender = Tender::find($id)->bids;
-//        $bid = Bid::where('tender_id', $id)->get();
-//        $bid = $tender->bids ;
+    Route::get('tender/{tender_id}/close', 'TenderCrudController@close')->name('close');
+    Route::get('tender/{tender_id}/open', 'TenderCrudController@open')->name('open');
+
+    Route::get('tender/timeline/task/{task}/complete', 'TaskController@complete')->name('complete');
+    Route::get('tender/timeline/task/{task}/uncomplete', 'TaskController@uncomplete')->name('uncomplete');
+
+    Route::get('test/{id}', function ($id){
+        $tender = Tender::find($id)->company->first()->user;
+
         dd($tender);
     });
 

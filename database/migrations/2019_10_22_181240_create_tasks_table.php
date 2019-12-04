@@ -23,6 +23,8 @@ class CreateTasksTable extends Migration
             $table->integer('duration');
             $table->string('type')->nullable();
             $table->float('progress');
+            $table->boolean('complete')->default(false);
+            $table->boolean('complete_confirm')->default(false);
             $table->integer('parent');
             $table->integer('sortorder')->default(0);
             $table->timestamps();

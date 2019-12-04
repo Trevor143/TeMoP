@@ -17,8 +17,8 @@
     @stop
 
 @section('content')
-    <div class="col-lg-9">
-    <div class="form-group">
+    <div class="col-lg-12">
+{{--    <div class="form-group">--}}
         <table id="tenders" class="table table-bordered table-striped table-responsive m-b-0">
             <thead>
             <tr>
@@ -43,7 +43,7 @@
             @endforeach
             </tbody>
         </table>
-    </div>
+{{--    </div>--}}
     </div>
 @stop
 

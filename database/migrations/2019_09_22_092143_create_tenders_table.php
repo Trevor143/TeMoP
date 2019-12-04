@@ -20,9 +20,11 @@ class CreateTendersTable extends Migration
             $table->longText('brief');
             $table->dateTime('deadline');
             $table->integer('applicationFee')->nullable();
-            $table->integer('status')->default(0);
+            $table->enum('status', ['DRAFT', 'PUBLISHED', 'AWARDED'])->default(0);
             $table->string('filename')->nullable();
             $table->longText('requiredDocs');
+            $table->boolean('closed');
+            $table->text('reason');
             $table->timestamps();
         });
     }

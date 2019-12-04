@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Bid;
+use App\Mail\AwardMail;
+use App\Mail\TenderClosureMail;
+use App\Mail\TenderDeclineAwardMail;
+use App\Mail\TenderReOpenMail;
 use App\Models\Detail;
 use App\Models\Tender;
 use App\User;
@@ -15,6 +19,8 @@ use Backpack\CRUD\CrudPanel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Prologue\Alerts\Facades\Alert;
 
 /**
  * Class TenderCrudController
@@ -42,10 +48,19 @@ class TenderCrudController extends CrudController
         */
 
         $this->crud->addButtonFromView('line','add_detail','add_detail','beginning');
+        $this->crud->addButtonFromView('line','timline','timline','beginning');
+        $this->crud->addButtonFromView('line', 'bids', 'bids', 'beginning');
+
         // TODO: remove setFromDb() and manually define Fields and Columns
 //        $this->crud->setFromDb();
-        $this->crud->setColumns(['name', 'brief', 'deadline', 'applicationFee',
-            'status']);
+        $this->crud->setColumns(['name', 'brief', 'deadline', 'applicationFee', 'status']);
+//        $this->crud->addColumn([
+//            'name' => 'status',
+//            'label' => 'Status',
+//        ]);
+//        $this->crud->setColumnDetails('status', [1 => 1, 0 => 0]);
+
+
         $this->crud->addField([
             'name'=>'user_id',
             'type'=>'hidden',
@@ -77,44 +92,51 @@ class TenderCrudController extends CrudController
             'default' => Carbon::tomorrow(),
         ]);
         $this->crud->addField([
-           'name'=>'applicationFee',
+            'name'=>'applicationFee',
             'label'=> 'Application Fee',
             'type' => 'number',
-             //optionals
+            //optionals
 //             'attributes' => ["step" => "any"], // allow decimals
-             'prefix' => "Kshs",
-             'suffix' => ".00",
+            'prefix' => "Kshs",
+            'suffix' => ".00",
             'value'=> 0,
         ]);
+//        $this->crud->addField([
+//            'name' => 'status',
+//            'label' => "Status",
+//            'type' => 'enum',
+//            'options' => [0 => 'DRAFT', 1 => 'PUBLISHED'],
+//            'allows_null' => false,
+//            'default' => 0,
+//            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
+//        ]);
+
         $this->crud->addField([
             'name' => 'status',
             'label' => "Status",
-            'type' => 'select2_from_array',
-            'options' => [0 => 'Draft', 1 => 'Publish'],
-            'allows_null' => false,
-            'default' => 0,
-            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
+            'type' => 'enum',
         ]);
+
         $this->crud->addField([
             'name'=>'filename',
             'label'=>'Tender Documents',
             'type'=>'browse_multiple',
             // 'multiple' => true, // enable/disable the multiple selection functionality
-             'mime_types' => ['application/pdf'], // visible mime prefixes; ex. ['image'] or ['application/pdf']
+            'mime_types' => ['application/pdf'], // visible mime prefixes; ex. ['image'] or ['application/pdf']
         ]);
         $this->crud->addField([
-        'name' => 'requiredDocs',
-        'label' => 'Specify Required Documents (Maximum of 5 Documents allowed)',
-        'type' => 'table',
-        'entity_singular' => 'option', // used on the "Add X" button
-        'columns' => [
-            'docName' => 'Document Name',
-            'desc' => 'Description of document',
-        ],
-        'max' => 5, // maximum rows allowed in the table
-        'min' => 1, // minimum rows allowed in the table
-        'tab' => 'Files',
-            ]);
+            'name' => 'requiredDocs',
+            'label' => 'Specify Required Documents (Maximum of 5 Documents allowed)',
+            'type' => 'table',
+            'entity_singular' => 'option', // used on the "Add X" button
+            'columns' => [
+                'docName' => 'Document Name',
+                'desc' => 'Description of document',
+            ],
+            'max' => 5, // maximum rows allowed in the table
+            'min' => 1, // minimum rows allowed in the table
+            'tab' => 'Files',
+        ]);
 
         $this->crud->addField([
             // Select2Multiple = n-n relationship (with pivot table)
@@ -161,11 +183,68 @@ class TenderCrudController extends CrudController
     {
         $bid = Bid::find($id);
 
-        $bid->tender->company()->attach($bid->bidder->company->id);
+        if ($bid->tender->deadline < Carbon::today()){
+            $bid->tender->company()->attach($bid->bidder->company->id);
 
-        $bid->tender->closed = true;
-        $bid->tender->save();
+            $bid->tender->status = 'AWARDED';
+            $bid->tender->save();
 
-        return redirect()->route('bids.bids');
+            $tender = $bid->tender;
+
+            Mail::to([$bid->bidder->company->email, $bid->bidder->email])->send(new AwardMail($bid->bidder, $bid->tender));
+
+            $not = $tender->bids->except($bid->id);
+
+            foreach ($not as $bid){
+
+            Mail::to([$bid->bidder->company->email, $bid->bidder->email])->send(new TenderDeclineAwardMail($tender));
+            sleep(2);
+            }
+            return redirect()->route('bids.bids',$bid->tender->id);
+        }
+        else{
+            return redirect()->back()->withErrors(['error'=> 'You cannot award a tender before deadline has passed']);
+        }
+    }
+
+    public function close($id){
+        $tender = Tender::find($id);
+        $tender->closed = true;
+        $tender->save();
+
+        $emails = $tender->company->first()->user->map->only('email');
+
+        Mail::to($emails )->send(new TenderClosureMail($tender));
+
+        Alert::add('error', 'Tender has been closed')->flash();
+
+        return redirect()->route('timeline', $id);
+    }
+
+    public function open($tender_id){
+        $tender = Tender::find($tender_id);
+
+        $tender->closed = false;
+
+        $tender->save();
+
+        $emails = $tender->company->first()->user->map->only('email');
+
+        Mail::to($emails )->send(new TenderReOpenMail($tender));
+
+        Alert::add('success', 'Tender has been re-opened')->flash();
+
+        return redirect()->back()->with(['message'=> 'This tender has been re-opened']);
+    }
+
+    public function complete($tender)
+    {
+        $tender = Tender::find($tender);
+
+        $tender->completed = true;
+        $tender->save();
+        Alert::warning( 'Tender has been completed')->flash();
+
+        return redirect()->back()->with(['message' => 'Tender is marked as complete']);
     }
 }

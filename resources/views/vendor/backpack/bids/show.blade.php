@@ -14,7 +14,7 @@
 @stop
 
 @section('content')
-    <div class="col-lg-9">
+    <div class="col-lg-5">
         <div class="box box-widget">
             <div class="box-header with-border">
                 <div class="user-block">
@@ -30,18 +30,13 @@
                 </div>
             </div>
 
-                <div class="box-body">
-                    <p>Far far away, behind the word mountains, far from the
-                        countries Vokalia and Consonantia, there live the blind
-                        texts. Separated they live in Bookmarksgrove right at</p>
+            <div class="box-body">
+                <p><strong>E-mail: </strong><a href="mailto: {{$bid->bidder->company->email}}">{{$bid->bidder->company->email}}</a></p>
+                <p><strong>Phone Number: </strong>{{$bid->bidder->company->mobile}}</p>
+                <p><strong>Year Found: </strong>{{$bid->bidder->company->yearFounded}}</p>
 
-                    <p>the coast of the Semantics, a large language ocean.
-                        A small river named Duden flows by their place and supplies
-                        it with the necessary regelialia. It is a paradisematic
-                        country, in which roasted parts of sentences fly into
-                        your mouth.</p>
-                </div>
-                <!-- /.box-tools -->
+            </div>
+            <!-- /.box-tools -->
             <!-- /.box-header -->
         </div>
     </div>
@@ -52,13 +47,32 @@
             </div>
             <div class="box-body">
                 <ul>
-                @foreach($bid->files as $file)
-                    <li><a href="{{Storage::url($file->fileurl)}}">{{$file->filename}}</a></li>
-                @endforeach
+                    @foreach($bid->files as $file)
+                        <li><a href="{{Storage::url( str_replace("storage/","",$file->fileurl))}}">{{$file->filename}}</a></li>
+                    @endforeach
                 </ul>
-                <div>
-                    <a href="{{route('award', $bid->id)}}"><button class="btn btn-primary">Award Tender</button></a>
-                </div>
+
+                @if($company->count() > 0)
+                    <div>
+                        Tender was awarded to <strong> {{$company->first()->name}}</strong>
+                    </div>
+                @else
+                    @if($bid->tender->deadline >= \Carbon\Carbon::today())
+                        <div class="box-body">
+                            <div class="alert-danger">
+                                <p>Tender can only be awarded once deadline has passed</p>
+                            </div>
+                        </div>
+                    @else
+                        <div>
+                            <a href="{{route('award', $bid->id)}}"><button class="btn btn-primary">Award Tender</button></a>
+                        </div>
+                        @error('error')
+                        <div class="alert-danger">{{ $message }}</div>
+                        @enderror
+
+                    @endif
+                @endif
             </div>
         </div>
     </div>

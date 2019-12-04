@@ -11,38 +11,25 @@ use Illuminate\Http\Request;
 
 class GanttController extends Controller
 {
-    private $tender;
-    public  function  __construct(Request $request)
+    public function show($id)
     {
-        $this->tender = $request->route('tender_id');
-    }
+        $tender = Tender::find($id);
 
-//    public $id = $this->tender;
-
-    public function show()
-    {
-//        dd($this->tender);
-        $tender = Tender::find($this->tender);
-//        dd($tender);
-//        $people = \App\Models\BackpackUser::all('id','name')->map(function ($items){
-//            $data['id'] = $items->id;
-//            $data['text'] = $items->name;
-//            return $data;
-//        });
+        $project = $tender->tasks->where('type', 'project')->pluck('id')->toArray();
+        $count = $tender->tasks->where('complete', true)
+            ->where('complete_confirm', true)->except($project)->count();
+        $tasks = $tender->tasks->except($project)->count();
 
         $people = $tender->user->map(function ($items){
             $data['id'] = $items->id;
             $data['text'] = $items->name;
             return $data;
         });
-//        dd($tender->tasks);
 
-        return view('vendor.backpack.timelines.gantt', compact('people', 'tender'));
+        return view('vendor.backpack.timelines.gantt', compact('people', 'tender', 'count', 'tasks'));
     }
 
     public function get($id){
-//        dd($id);
-
         $tender = Tender::find($id);
 //        $tasks = Task::where('tender_id', $id)->get();
         $tasks = new Task();
@@ -71,5 +58,6 @@ class GanttController extends Controller
 
         return view('vendor.backpack.timelines.gantt', compact('tender', 'people'));
     }
+
 
 }

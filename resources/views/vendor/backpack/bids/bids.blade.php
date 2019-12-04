@@ -17,7 +17,7 @@
 @section('content')
 {{--    Main content with bids view--}}
     <div class="col-lg-9">
-    @foreach($bids as $bid)
+    @forelse($bids as $bid)
         <div class="box box-widget">
             <div class="box-header with-border">
                 <div class="user-block">
@@ -36,15 +36,9 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- post text -->
-                <p>Far far away, behind the word mountains, far from the
-                    countries Vokalia and Consonantia, there live the blind
-                    texts. Separated they live in Bookmarksgrove right at</p>
-
-                <p>the coast of the Semantics, a large language ocean.
-                    A small river named Duden flows by their place and supplies
-                    it with the necessary regelialia. It is a paradisematic
-                    country, in which roasted parts of sentences fly into
-                    your mouth.</p>
+                <p><strong>E-mail: </strong><a href="mailto: {{$bid->bidder->company->email}}">{{$bid->bidder->company->email}}</a></p>
+                <p><strong>Phone Number: </strong>{{$bid->bidder->company->mobile}}</p>
+                <p><strong>Year Found: </strong>{{$bid->bidder->company->yearFounded}}</p>
 
                 <span class="input-group-btn">
                         <a href="{{route('bids.show', $bid->id)}}" class="btn btn-primary">Show Bid</a>
@@ -54,27 +48,100 @@
             <!-- /.box-body -->
 
         </div>
-    @endforeach
+        @empty
+        <div class="box box-widget">
+            <div class="box-body">
+                <p>No bids have been placed on this tender</p>
+            </div>
+        </div>
+    @endforelse
     </div>
-{{--    Options on the Right--}}
-    <div class="col-lg-3">
-        <div class="box box-warning">
-            <div class="box-header with-border">
-                <h3 class="box-title">Options</h3>
 
+<div class="col-lg-3">
+    @if($company->count() == 0 )
+        @if($bids->count() > 0)
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3>Invite all bidders</h3>
+                </div>
+                @if($tender->deadline >= \Carbon\Carbon::today())
+                <div class="box-body">
+                    <p>Invites can be sent out once deadline is past</p>
+                </div>
+                @else
+                    <div class="box-body">
+                        <a href="{{route('inviteAll', $tender->id)}}" class="btn btn-success">Send Emails</a>
+                    </div>
+                @endif
+            </div>
+        @else
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    No bids
+                </div>
+            </div>
+        @endif
+    @else
+        <div class="box box-warning">
+            <div class="box-header-with-border">
+                Bid has been awarded
+            </div>
+            <div class="box-body">
+                Bid was awarded to <strong>{{$tender->company->first()->name}}</strong>
+            </div>
+        </div>
+    @endif
+</div>
+
+
+{{--    Options on the Right--}}
+{{--@forelse($bids as $bid)--}}
+{{--    <div class="col-lg-3">--}}
+{{--        <div class="box box-warning">--}}
+{{--            <div class="box-header with-border">--}}
+{{--                <h3 class="box-title">Options</h3>--}}
 {{--                <div class="box-tools pull-right">--}}
 {{--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>--}}
 {{--                    </button>--}}
 {{--                </div>--}}
-                <!-- /.box-tools -->
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                Invite all bidders <br>
-                <a href="#" class="btn btn-success">Send Emails</a>
-            </div>
-            <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
-    </div>
+{{--                <!-- /.box-tools -->--}}
+{{--            </div>--}}
+{{--            <!-- /.box-header -->--}}
+{{--            <div class="box-body">--}}
+{{--                Invite all bidders <br>--}}
+{{--                @forelse($company as $com)--}}
+{{--                    <div>--}}
+{{--                        Tender was awarded to <strong>{{$com->name}}</strong>--}}
+{{--                    </div>--}}
+{{--                @empty--}}
+{{--                    <div>--}}
+{{--                        <a href="{{route('inviteAll', $tender->id)}}" class="btn btn-success">Send Emails</a>--}}
+{{--                    </div>--}}
+{{--                @endforelse--}}
+{{--                @if($tender->company)--}}
+{{--                    This tender was awarded.--}}
+{{--                @else--}}
+{{--                    <a href="{{route('inviteAll', $tender->id)}}" class="btn btn-success">Send Emails</a>--}}
+
+{{--                @endif--}}
+{{--            </div>--}}
+{{--            <!-- /.box-body -->--}}
+{{--        </div>--}}
+{{--        <!-- /.box -->--}}
+{{--    </div>--}}
+{{--    @empty--}}
+{{--    <div class="col-lg-3">--}}
+{{--        <div class="box box-warning">--}}
+{{--            <div class="box-header with-border">--}}
+{{--                <h3 class="box-title">Options</h3>--}}
+{{--            </div>--}}
+{{--            <!-- /.box-header -->--}}
+{{--            <div class="box-body">--}}
+{{--                No bids submitted <br>--}}
+{{--            </div>--}}
+{{--            <!-- /.box-body -->--}}
+{{--        </div>--}}
+{{--        <!-- /.box -->--}}
+{{--    </div>--}}
+{{--@endforelse--}}
     @stop

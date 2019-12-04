@@ -16,4 +16,7 @@ class Company extends Model
         return $this->belongsToMany('App\Models\Tender', 'company_tender');
     }
 
+    public function user(){
+        return $this->hasMany('App\Models\Bidder','company_id');
+    }
 }

@@ -84,6 +84,32 @@ class TaskController extends Controller
         return view('vendor.backpack.timelines.task', compact('task'));
     }
 
+    public function complete($task)
+    {
+        $task = Task::find($task);
+
+        $task->complete_confirm = true;
+
+        $task->save();
+
+//        toastSuccess('Task has been marked as complete. Pending confirmation' );
+
+        return redirect()->route('task.show', $task->id);
+    }
+
+    public function uncomplete($task)
+    {
+        $task = Task::find($task);
+
+        $task->complete_confirm = false;
+
+        $task->save();
+
+//        toastSuccess('Task has been marked as incomplete.' );
+
+        return redirect()->route('task.show', $task->id);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

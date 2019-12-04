@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TenderInviteMail;
 use App\Models\Bid;
 use App\Models\Tender;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class BidController extends Controller
 {
@@ -52,8 +54,9 @@ class BidController extends Controller
     {
         $tender = Tender::find($id);
         $bids = $tender->bids;
-
-        return view('vendor.backpack.bids.bids', compact('bids','tender'));
+        $company = $tender->company;
+//dd($company->count());
+        return view('vendor.backpack.bids.bids', compact('bids','tender', 'company'));
     }
 
     /**
@@ -65,9 +68,20 @@ class BidController extends Controller
     public function show($id)
     {
         $bid = Bid::find($id);
+        $company = $bid->tender->company;
+        return view('vendor.backpack.bids.show', compact('bid', 'company'));
+    }
 
-//        dd($bid->files);
-        return view('vendor.backpack.bids.show', compact('bid'));
+    public function inviteAll($tender){
+        $tender = Tender::find($tender);
+
+        $bids = $tender->bids;
+
+        foreach ($bids as $bid){
+            sleep(2);
+            Mail::to($bid->bidder->company->email)->send(new TenderInviteMail($bid->bidder, $bid->tender));
+        }
+        return redirect()->back();
     }
     /**
      * Show the form for editing the specified resource.

@@ -25,6 +25,7 @@
                 <th style="font-weight: 600!important;">Tender Name</th>
                 <th style="font-weight: 600!important;">Tender Deadline</th>
                 <th style="font-weight: 600!important;">Number of Bids</th>
+                <th style="font-weight: 600!important;">Status</th>
                 <th style="font-weight: 600!important;">Actions</th>
             </tr>
             </thead>
@@ -34,11 +35,13 @@
                     <td>{{$tender->name}}</td>
                     <td>{{$tender->deadline->isoFormat('dddd, D MMMM, Y')}}</td>
                     <td>{{$tender->bids->count()}}</td>
+                    <td>{{$tender->status}}</td>
 {{--                    @if($tender->deadline->diffInDays(now()) == 0 )--}}
-                    <td><a href="{{route('bids.bids', $tender->id)}}" class="btn btn-success">View Bids</a></td>
-{{--                    @else--}}
-{{--                        <td><p>You will view all bids once the deadline expires</p></td>--}}
-{{--                    @endif--}}
+                    <td><a href="{{route('bids.bids', $tender->id)}}" class="btn btn-success">View Bids</a>
+                        @if($tender->status =='AWARDED')
+                            <a href="{{ url(config('backpack.base.route_prefix').'/tender/'.$tender->id.'/timeline') }}" class="btn btn-success">Show Timeline</a>
+                        @endif
+                    </td>
                 </tr>
             @endforeach
             </tbody>

@@ -1,19 +1,17 @@
-{{--@component('mail::message')--}}
-{{--# Task Reminder for <strong> {{$task->name}}</strong>--}}
+@component('mail::message')
+# Task Reminder for <strong> {{$task->text}}</strong>
 
-{{--The body of your message.--}}
+The above task is slated to be completed by <strong>{{$task->start_date->addDays($task->duration)->isoFormat('dddd D MMMM Y')}}</strong>
 
-{{--@component('mail::button', ['url' => ''])--}}
-{{--Button Text--}}
-{{--@endcomponent--}}
+Kindly take note.
 
-{{--Thanks,<br>--}}
-{{--{{ config('app.name') }}--}}
-{{--@endcomponent--}}
+Thanks,<br>
+{{ config('app.name') }}
+@endcomponent
 
-@extends('layouts.app')
+{{--@extends('layouts.app')--}}
 
-@section('content')
-    <div class="header">{{$task->text}} </div>
+{{--@section('content')--}}
+{{--    <div class="header">{{$task->text}} </div>--}}
 
-@stop
+{{--@stop--}}

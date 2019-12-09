@@ -7,6 +7,7 @@ use App\Mail\AwardMail;
 use App\Mail\TenderClosureMail;
 use App\Mail\TenderDeclineAwardMail;
 use App\Mail\TenderReOpenMail;
+use App\Mail\TenderUpdateMail;
 use App\Models\Detail;
 use App\Models\Tender;
 use App\User;
@@ -51,15 +52,13 @@ class TenderCrudController extends CrudController
         $this->crud->addButtonFromView('line','timline','timline','beginning');
         $this->crud->addButtonFromView('line', 'bids', 'bids', 'beginning');
 
+//        $this->crud->allowAccess('show');
+
+        $this->crud->addClause('where', 'status', '!=', 'AWARDED');
+
         // TODO: remove setFromDb() and manually define Fields and Columns
 //        $this->crud->setFromDb();
-        $this->crud->setColumns(['name', 'brief', 'deadline', 'applicationFee', 'status']);
-//        $this->crud->addColumn([
-//            'name' => 'status',
-//            'label' => 'Status',
-//        ]);
-//        $this->crud->setColumnDetails('status', [1 => 1, 0 => 0]);
-
+        $this->crud->setColumns(['name', 'deadline', 'status', 'brief']);
 
         $this->crud->addField([
             'name'=>'user_id',
@@ -101,22 +100,15 @@ class TenderCrudController extends CrudController
             'suffix' => ".00",
             'value'=> 0,
         ]);
-//        $this->crud->addField([
-//            'name' => 'status',
-//            'label' => "Status",
-//            'type' => 'enum',
-//            'options' => [0 => 'DRAFT', 1 => 'PUBLISHED'],
-//            'allows_null' => false,
-//            'default' => 0,
-//            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
-//        ]);
-
         $this->crud->addField([
             'name' => 'status',
             'label' => "Status",
-            'type' => 'enum',
+            'type' => 'select_from_array',
+            'options' => ['DRAFT' => 'DRAFT', 'PUBLISHED' => 'PUBLISHED'],
+            'allows_null' => false,
+            'default' => 0,
+            // 'allows_multiple' => true, // OPTIONAL; needs you to cast this to array in your model;
         ]);
-
         $this->crud->addField([
             'name'=>'filename',
             'label'=>'Tender Documents',
@@ -137,7 +129,6 @@ class TenderCrudController extends CrudController
             'min' => 1, // minimum rows allowed in the table
             'tab' => 'Files',
         ]);
-
         $this->crud->addField([
             // Select2Multiple = n-n relationship (with pivot table)
             'label' => "Select Partners",
@@ -154,7 +145,6 @@ class TenderCrudController extends CrudController
                 return $query->role('Super Administrator')->get();
             }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
         ]);
-
 
         // add asterisk for fields that are required in TenderRequest
         $this->crud->setRequiredFields(StoreRequest::class, 'create');
@@ -173,7 +163,13 @@ class TenderCrudController extends CrudController
     public function update(UpdateRequest $request)
     {
         // your additional operations before save here
+        $tender = Tender::find($request->id);
         $redirect_location = parent::updateCrud($request);
+        if ($tender->bids->count() > 0) {
+            foreach ($tender->bids as $bid) {
+                Mail::to([$bid->bidder->email, $bid->bidder->company->first()->email])->send(new TenderUpdateMail($tender, $request));
+            }
+        }
         // your additional operations after save here
         // use $this->data['entry'] or $this->crud->entry
         return $redirect_location;
@@ -197,8 +193,8 @@ class TenderCrudController extends CrudController
 
             foreach ($not as $bid){
 
-            Mail::to([$bid->bidder->company->email, $bid->bidder->email])->send(new TenderDeclineAwardMail($tender));
-            sleep(2);
+                Mail::to([$bid->bidder->company->email, $bid->bidder->email])->send(new TenderDeclineAwardMail($tender));
+                sleep(2);
             }
             return redirect()->route('bids.bids',$bid->tender->id);
         }

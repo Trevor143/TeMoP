@@ -34,6 +34,6 @@ class TenderInviteMail extends Mailable
      */
     public function build()
     {
-        return $this->view('vendor.backpack.email.invite');
+        return $this->markdown('vendor.backpack.email.invite');
     }
 }

@@ -2,30 +2,27 @@
 
 namespace App\Mail;
 
-use App\Models\Bidder;
 use App\Models\Tender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AwardMail extends Mailable
+class TenderUpdateMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $bidder ;
     public $tender;
-
+    public $request;
     /**
      * Create a new message instance.
      *
-     * @param Bidder $bidder
-     * @param Tender $tender
+     * @return void
      */
-    public function __construct(Bidder $bidder, Tender $tender)
+    public function __construct(Tender $tender, $request)
     {
-        $this->bidder = $bidder;
         $this->tender = $tender;
+        $this->request =$request;
     }
 
     /**
@@ -35,6 +32,6 @@ class AwardMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('vendor.backpack.email.award');
+        return $this->markdown('emails.tenderupdate');
     }
 }

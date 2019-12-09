@@ -135,15 +135,15 @@
 
 @section('content')
     <div class="box">
-        @if($tender->bids->count() > 0)
-            @if($count == $tasks)
-                <div class="box-header with-border">
-                    <h3>All Tasks completed</h3>
-                    <h5>Do you want to complete this tender?</h5>
-                    <button class="btn btn-success">Complete Tender</button>
-                </div>
-            @endif
-        @endif
+{{--        @if($tender->bids->count() > 0)--}}
+{{--            @if($count == $tasks)--}}
+{{--                <div class="box-header with-border">--}}
+{{--                    <h3>All Tasks completed</h3>--}}
+{{--                    <h5>Do you want to complete this tender?</h5>--}}
+{{--                    <button class="btn btn-success">Complete Tender</button>--}}
+{{--                </div>--}}
+{{--            @endif--}}
+{{--        @endif--}}
         <div class="box-header">
             @if($tender->closed === 0)
             <h3 class="header">

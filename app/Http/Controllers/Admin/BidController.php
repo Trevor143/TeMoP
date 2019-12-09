@@ -18,7 +18,8 @@ class BidController extends Controller
      */
     public function index()
     {
-        $tenders = Tender::all()->where('closed',false);
+        $tenders = Tender::where('status','!=','DRAFT')->get();
+//        dd($tenders);
 
         return view('vendor.backpack.bids.index', compact('tenders'));
     }
@@ -55,7 +56,7 @@ class BidController extends Controller
         $tender = Tender::find($id);
         $bids = $tender->bids;
         $company = $tender->company;
-//dd($company->count());
+
         return view('vendor.backpack.bids.bids', compact('bids','tender', 'company'));
     }
 

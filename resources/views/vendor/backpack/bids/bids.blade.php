@@ -22,8 +22,8 @@
             <div class="box-header with-border">
                 <div class="user-block">
                     <img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Image">
-                    <span class="username"><a href="#">{{$bid->bidder->name}}.</a></span>
-                    <span class="description">Bid submitted - {{$bid->created_at->isoFormat('dddd, D MMMM, Y')}} by {{$bid->bidder->name}}</span>
+                    <span class="username"><a href="#">{{$bid->bidder->company->name}}.</a></span>
+                    <span class="description">Bid submitted - {{$bid->created_at->isoFormat('dddd, D MMMM, Y HH:MM')}} by {{$bid->bidder->name}}</span>
                 </div>
                 <!-- /.user-block -->
                 <div class="box-tools">
@@ -64,7 +64,7 @@
                 <div class="box-header with-border">
                     <h3>Invite all bidders</h3>
                 </div>
-                @if($tender->deadline >= \Carbon\Carbon::today())
+                @if($tender->deadline > \Carbon\Carbon::now())
                 <div class="box-body">
                     <p>Invites can be sent out once deadline is past</p>
                 </div>
@@ -87,7 +87,7 @@
                 Bid has been awarded
             </div>
             <div class="box-body">
-                Bid was awarded to <strong>{{$tender->company->first()->name}}</strong>
+                Bid was awarded to <strong>{{$company->first()->name}}</strong>
             </div>
         </div>
     @endif

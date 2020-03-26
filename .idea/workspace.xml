@@ -3,18 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d604fe56-1710-49bb-8059-29fefa73d172" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/BidController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/BidController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/TenderCrudController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/TenderCrudController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/AwardMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/AwardMail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/NewPartnerResetMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/NewPartnerResetMail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/TenderInviteMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/TenderInviteMail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/emails/reminder.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/emails/reminder.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/emails/tenderComplete.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/emails/tenderComplete.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/backpack/bids/bids.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/backpack/bids/bids.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/backpack/bids/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/backpack/bids/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/backpack/email/award.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/backpack/email/award.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/backpack/email/invite.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/backpack/email/invite.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/vendor/backpack/timelines/gantt.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/vendor/backpack/timelines/gantt.blade.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -162,7 +150,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/gantt_files" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -251,6 +239,10 @@
       <workItem from="1575007950499" duration="71442000" />
       <workItem from="1575368554657" duration="10218000" />
       <workItem from="1575809707658" duration="22789000" />
+      <workItem from="1580035030650" duration="1394000" />
+      <workItem from="1582966934555" duration="215000" />
+      <workItem from="1583396813019" duration="645000" />
+      <workItem from="1583482071473" duration="760000" />
     </task>
     <servers />
   </component>
